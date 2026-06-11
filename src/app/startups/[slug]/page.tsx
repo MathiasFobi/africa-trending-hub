@@ -30,7 +30,7 @@ function ogUrl(params: { kind: string; title: string; subtitle?: string; eyebrow
   const sp = new URLSearchParams({ kind: params.kind, title: params.title });
   if (params.subtitle) sp.set("subtitle", params.subtitle);
   if (params.eyebrow) sp.set("eyebrow", params.eyebrow);
-  return `${SITE_URL}/opengraph-image?${sp.toString()}`;
+  return `${SITE_URL}/api/og?${sp.toString()}`;
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
