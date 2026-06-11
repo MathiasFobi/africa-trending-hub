@@ -1,0 +1,77 @@
+{
+  "startedAt": "2026-06-11T20:52:08.320Z",
+  "mode": "draft",
+  "sources": [
+    "Partech",
+    "Africa: The Big Deal",
+    "The Africa Report",
+    "TikTok Africa",
+    "Disrupt Africa"
+  ],
+  "rawItems": 380,
+  "unique": 378,
+  "extracted": 12,
+  "novel": 12,
+  "articles": [
+    {
+      "slug": "happy-pay-lands-5m-seed-round-led-by-partech",
+      "title": "Happy Pay Lands $5M Seed Round Led by Partech",
+      "source": "Partech"
+    },
+    {
+      "slug": "africa-tech-funding-soars-25-in-2025-driven-by-record-debt-partech-reports",
+      "title": "Africa Tech Funding Soars 25% in 2025, Driven by Record Debt, Partech Reports",
+      "source": "Partech"
+    },
+    {
+      "slug": "saudi-arabia-launches-250m-fund-to-boost-african-startup-investment",
+      "title": "Saudi Arabia Launches $250M Fund to Boost African Startup Investment",
+      "source": "Partech"
+    },
+    {
+      "slug": "african-tech-new-funds-emerge-for-2026-pitches",
+      "title": "African Tech: New Funds Emerge for 2026 Pitches",
+      "source": "Partech"
+    },
+    {
+      "slug": "africas-investment-puzzle-whats-holding-back-private-equity-venture-capital",
+      "title": "Africa's Investment Puzzle: What's Holding Back Private Equity & Venture Capital?",
+      "source": "Partech"
+    },
+    {
+      "slug": "revibe-secures-17m-to-scale-africas-refurbished-electronics-market",
+      "title": "Revibe Secures $17M to Scale Africa's Refurbished Electronics Market",
+      "source": "Partech"
+    },
+    {
+      "slug": "partech-invests-in-happy-pay-bolstering-african-fintech-landscape",
+      "title": "Partech Invests in Happy Pay, Bolstering African Fintech Landscape",
+      "source": "Partech"
+    },
+    {
+      "slug": "partech-secures-300m-for-second-africa-fund-targeting-seed-to-series-c-startups",
+      "title": "Partech Secures $300M+ for Second Africa Fund, Targeting Seed to Series C Startups",
+      "source": "Partech"
+    },
+    {
+      "slug": "african-tech-funding-pivots-to-debt-hits-41b-by-2025",
+      "title": "African Tech Funding Pivots to Debt, Hits $4.1B by 2025",
+      "source": "Partech"
+    },
+    {
+      "slug": "leading-african-vcs-still-actively-investing-in-2025",
+      "title": "Leading African VCs Still Actively Investing in 2025",
+      "source": "Partech"
+    },
+    {
+      "slug": "african-startups-face-longer-fundraising-rounds-amid-investor-shift",
+      "title": "African Startups Face Longer Fundraising Rounds Amid Investor Shift",
+      "source": "Partech"
+    },
+    {
+      "slug": "partech-africa-ii-fund-closes-at-300m-bolstering-continents-tech-landscape",
+      "title": "Partech Africa II Fund Closes at $300M, Bolstering Continent's Tech Landscape",
+      "source": "Partech"
+    }
+  ]
+}

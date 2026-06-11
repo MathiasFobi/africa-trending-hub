@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "research": "tsx scripts/daily-research.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -18,6 +19,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -25,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }
