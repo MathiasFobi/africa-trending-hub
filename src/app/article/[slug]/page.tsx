@@ -83,6 +83,26 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
   return (
     <article>
+      {/* Hero image */}
+      {article.image && (
+        <div className="relative w-full bg-ink-900 border-b border-ink-700/60">
+          <div className="relative aspect-[21/9] max-h-[480px] overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={article.image}
+              alt={article.imageCaption ?? article.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/40 to-transparent" />
+            {article.imageCaption && (
+              <div className="absolute bottom-3 right-3 text-[10px] font-mono text-ivory/80 bg-midnight/70 px-2 py-1 rounded-sm backdrop-blur">
+                {article.imageCaption}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       <header className="border-b border-ink-700/60 bg-gradient-to-b from-ink-800/40 to-midnight">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-8 sm:pt-14 sm:pb-10">

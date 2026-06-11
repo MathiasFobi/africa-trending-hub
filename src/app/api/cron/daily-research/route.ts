@@ -116,6 +116,21 @@ function slugify(s: string): string {
     .slice(0, 80);
 }
 
+// Curated Unsplash photo IDs for each category — verified working URLs
+// (no API key needed, served directly from Unsplash CDN)
+const UNSPLASH_PHOTOS: Record<string, string> = {
+  business: "photo-1559526324-4b87b5e36e53",
+  innovation: "photo-1518770660439-4636190af475",
+  culture: "photo-1571266028243-d220c6a04e91",
+  sports: "photo-1574629810360-7efbbe195018",
+  politics: "photo-1605648916361-9bc12ad6a569",
+  music: "photo-1493225458967-bf993a78bf33",
+};
+
+function pickUnsplashPhoto(category: string): string {
+  return UNSPLASH_PHOTOS[category] ?? UNSPLASH_PHOTOS.business;
+}
+
 function safeJsonParse<T>(text: string): T | null {
   try {
     return JSON.parse(text) as T;
@@ -294,6 +309,8 @@ async function commitArticlesToGitHub(articles: Article[], log: string[]): Promi
           a.authorRole ? `authorRole: ${JSON.stringify(a.authorRole)}` : null,
           `publishedAt: "${a.publishedAt}"`,
           `readMinutes: ${a.readMinutes}`,
+          a.image ? `image: ${JSON.stringify(a.image)}` : null,
+          a.imageCaption ? `imageCaption: ${JSON.stringify(a.imageCaption)}` : null,
           a.trending ? `trending: true` : null,
           a.featured ? `featured: true` : null,
           tags ? `tags: [${tags}]` : null,
@@ -413,6 +430,9 @@ export async function GET(req: NextRequest) {
       readMinutes: ex.readMinutes,
       trending: extracted.length > 0 && novel.length < 3,
       tags: ex.tags,
+      // Curated Unsplash hero image — no API key needed, redirect-based
+      image: `https://images.unsplash.com/${pickUnsplashPhoto(ex.category)}?w=1600&q=80`,
+      imageCaption: ex.title,
       sourceUrl: ex.sourceUrl,
       sourceName: ex.sourceName,
     };

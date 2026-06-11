@@ -48,12 +48,21 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
           className
         )}
       >
-        <div className="aspect-[16/10] relative bg-gradient-to-br from-ink-700 via-ink-800 to-ink-900">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-ink-600 text-[120px] font-display font-bold opacity-20 select-none">
-              {cat.split(" ")[0].slice(0, 2)}
+        <div className="aspect-[16/10] relative bg-ink-800 overflow-hidden">
+          {article.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={article.image}
+              alt={article.imageCaption ?? article.title}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-ink-700 via-ink-800 to-ink-900 flex items-center justify-center">
+              <div className="text-ink-600 text-[120px] font-display font-bold opacity-20 select-none">
+                {cat.split(" ")[0].slice(0, 2)}
+              </div>
             </div>
-          </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/60 to-transparent" />
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <span className={cn("px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest border rounded-sm", color, bg)}>
@@ -102,12 +111,21 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
           className
         )}
       >
-        <div className="aspect-[16/9] relative bg-gradient-to-br from-ink-700 to-ink-900">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-ink-600 text-[80px] font-display font-bold opacity-20 select-none">
-              {cat.split(" ")[0].slice(0, 2)}
+        <div className="aspect-[16/9] relative bg-ink-800 overflow-hidden">
+          {article.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={article.image}
+              alt={article.imageCaption ?? article.title}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-ink-700 to-ink-900 flex items-center justify-center">
+              <div className="text-ink-600 text-[80px] font-display font-bold opacity-20 select-none">
+                {cat.split(" ")[0].slice(0, 2)}
+              </div>
             </div>
-          </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-midnight/95 to-transparent" />
           <span className={cn("absolute top-3 left-3 px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest border rounded-sm", color, bg)}>
             {cat}
