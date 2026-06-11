@@ -255,6 +255,89 @@ async function triggerDeploy(): Promise<void> {
 }
 
 // ============================================================================
+// GitHub write-back — commit the new articles to the repo so Vercel
+// auto-deploys the live site with the fresh content.
+// ============================================================================
+
+async function commitArticlesToGitHub(articles: Article[]): Promise<boolean> {
+  const ghToken = process.env.GITHUB_TOKEN;
+  const ghRepo = process.env.GITHUB_REPO; // e.g. "MathiasFobi/africa-trending-hub"
+  const ghBranch = process.env.GITHUB_BRANCH ?? "main";
+  if (!ghToken || !ghRepo) {
+    log.push("ℹ️  no GITHUB_TOKEN/GITHUB_REPO, skipping write-back");
+    return false;
+  }
+
+  try {
+    // Fetch current articles.ts
+    const getRes = await fetch(
+      `https://api.github.com/repos/${ghRepo}/contents/src/data/articles.ts?ref=${ghBranch}`,
+      { headers: { Authorization: `Bearer ${ghToken}`, Accept: "application/vnd.github+json" } },
+    );
+    if (!getRes.ok) {
+      log.push(`⚠️  github GET failed: ${getRes.status}`);
+      return false;
+    }
+    const current = (await getRes.json()) as { sha: string; content: string };
+    const decoded = Buffer.from(current.content, "base64").toString("utf-8");
+
+    // Build new entries
+    const newEntries = articles
+      .map((a) => {
+        const tags = (a.tags ?? []).map((t) => `"${t}"`).join(", ");
+        const fields = [
+          `slug: "${a.slug}"`,
+          `title: ${JSON.stringify(a.title)}`,
+          `excerpt: ${JSON.stringify(a.excerpt)}`,
+          `category: "${a.category}"`,
+          `author: ${JSON.stringify(a.author)}`,
+          a.authorRole ? `authorRole: ${JSON.stringify(a.authorRole)}` : null,
+          `publishedAt: "${a.publishedAt}"`,
+          `readMinutes: ${a.readMinutes}`,
+          a.trending ? `trending: true` : null,
+          a.featured ? `featured: true` : null,
+          tags ? `tags: [${tags}]` : null,
+          a.sourceUrl ? `sourceUrl: ${JSON.stringify(a.sourceUrl)}` : null,
+          a.sourceName ? `sourceName: ${JSON.stringify(a.sourceName)}` : null,
+        ].filter(Boolean);
+        return `  {\n    ${fields.join(",\n    ")},\n  }`;
+      })
+      .join(",\n");
+
+    // Insert before closing `];`
+    const updated = decoded.replace(/(\];\s*)$/, `${newEntries},\n$1`);
+    const encoded = Buffer.from(updated, "utf-8").toString("base64");
+
+    const putRes = await fetch(
+      `https://api.github.com/repos/${ghRepo}/contents/src/data/articles.ts`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${ghToken}`,
+          Accept: "application/vnd.github+json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `research(daily): ${articles.length} new article${articles.length === 1 ? "" : "s"}`,
+          content: encoded,
+          sha: current.sha,
+          branch: ghBranch,
+        }),
+      },
+    );
+    if (!putRes.ok) {
+      log.push(`⚠️  github PUT failed: ${putRes.status}`);
+      return false;
+    }
+    log.push(`📝 committed ${articles.length} articles to GitHub ${ghBranch}`);
+    return true;
+  } catch (err) {
+    log.push(`⚠️  github write-back error: ${(err as Error).message}`);
+    return false;
+  }
+}
+
+// ============================================================================
 // Main handler
 // ============================================================================
 
@@ -345,7 +428,13 @@ export async function GET(req: NextRequest) {
     result.appended = novel.length;
     result.articles = novel.map((a) => ({ slug: a.slug, title: a.title, source: a.sourceName ?? "unknown" }));
     await postTelegram(novel);
-    await triggerDeploy();
+    // Write new articles to the GitHub repo so Vercel auto-deploys them
+    const committed = await commitArticlesToGitHub(novel);
+    if (!committed) {
+      // Fallback: trigger the deploy hook (won't add new content, but at least
+      // signals a deploy happened)
+      await triggerDeploy();
+    }
     log.push(`✅ ${novel.length} articles appended + deployed + telegram notified`);
   } else {
     log.push("ℹ️  no novel articles to publish");

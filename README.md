@@ -76,4 +76,3 @@ vercel --prod
 | `ivory` | Headlines on dark |
 
 Fonts: `font-display` (headlines) and `font-mono` (eyebrows, timestamps, tickers).
-<!-- 2026-06-11T21:09:58Z -->
