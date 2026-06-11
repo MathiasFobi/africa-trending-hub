@@ -76,3 +76,4 @@ vercel --prod
 | `ivory` | Headlines on dark |
 
 Fonts: `font-display` (headlines) and `font-mono` (eyebrows, timestamps, tickers).
+Production deploy: 2026-06-11 10:10 PT — Vercel GitHub auto-deploy wired
