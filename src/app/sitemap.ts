@@ -4,6 +4,7 @@ import { events } from "@/data/events";
 import { opportunities } from "@/data/opportunities";
 import { articles } from "@/data/articles";
 import { categories } from "@/data/site";
+import { videoPlaylists } from "@/data/videos";
 
 const SITE_URL = "https://africa-trending-hub.vercel.app";
 
@@ -17,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/startups`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/events`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${SITE_URL}/opportunities`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${SITE_URL}/watch`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
 
   // Category pages (6)
@@ -59,6 +61,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  // Video playlists (6 channels)
+  const videoPages: MetadataRoute.Sitemap = videoPlaylists.map((v) => ({
+    url: `${SITE_URL}/watch/${v.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
   return [
     ...staticPages,
     ...categoryPages,
@@ -66,5 +76,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...startupPages,
     ...eventPages,
     ...opportunityPages,
+    ...videoPages,
   ];
 }

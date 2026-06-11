@@ -19,10 +19,11 @@ export const categories = [
 
 export const navItems = [
   { href: "/", label: "Home" },
+  { href: "/pulse", label: "Pulse" },
   { href: "/startups", label: "Startups" },
   { href: "/events", label: "Events" },
   { href: "/opportunities", label: "Opportunities" },
-  { href: "/pulse", label: "Pulse" },
+  { href: "/watch", label: "Watch" },
   ...categories.map((c) => ({ href: `/category/${c.slug}`, label: c.label })),
 ] as const;
 
