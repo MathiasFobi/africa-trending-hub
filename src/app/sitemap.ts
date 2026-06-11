@@ -27,36 +27,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Articles (12)
+  // Articles (12) — now with real detail pages
   const articlePages: MetadataRoute.Sitemap = articles.map((a) => ({
-    url: `${SITE_URL}/category/${a.category}#${a.slug}`,
+    url: `${SITE_URL}/article/${a.slug}`,
     lastModified: new Date(a.publishedAt),
     changeFrequency: "weekly",
-    priority: 0.6,
+    priority: 0.7,
   }));
 
-  // Startups (10)
+  // Startups (10) — now with real detail pages
   const startupPages: MetadataRoute.Sitemap = startups.map((s) => ({
-    url: `${SITE_URL}/startups#${s.slug}`,
+    url: `${SITE_URL}/startups/${s.slug}`,
     lastModified: new Date(s.lastRoundDate),
     changeFrequency: "weekly",
-    priority: 0.6,
+    priority: 0.7,
   }));
 
-  // Events (12)
+  // Events (12) — now with real detail pages
   const eventPages: MetadataRoute.Sitemap = events.map((e) => ({
-    url: `${SITE_URL}/events#${e.slug}`,
+    url: `${SITE_URL}/events/${e.slug}`,
     lastModified: new Date(e.startDate),
     changeFrequency: "weekly",
-    priority: 0.6,
+    priority: 0.7,
   }));
 
-  // Opportunities (12)
+  // Opportunities (12) — now with real detail pages
   const opportunityPages: MetadataRoute.Sitemap = opportunities.map((o) => ({
-    url: `${SITE_URL}/opportunities#${o.slug}`,
+    url: `${SITE_URL}/opportunities/${o.slug}`,
     lastModified: o.deadline === "Rolling" ? now : new Date(o.deadline),
     changeFrequency: "daily",
-    priority: 0.7,
+    priority: 0.8,
   }));
 
   return [
