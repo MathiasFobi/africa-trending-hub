@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   AfricaTrendingHub — Brand System
+   "Tracking the Pulse of a Rising Continent"
+   ========================================================================= */
+
+:root {
+  /* Brand colors — Option A: Pan-African Future */
+  --midnight: #0B0B0B;
+  --gold: #D4AF37;
+  --emerald: #008751;
+  --ivory: #F4F1E8;
+
+  /* Surface variants */
+  --ink-900: #0B0B0B;       /* Primary base */
+  --ink-800: #141414;       /* Card */
+  --ink-700: #1C1C1C;       /* Card hover */
+  --ink-600: #2A2A2A;       /* Borders, dividers */
+  --ink-500: #3A3A3A;       /* Muted */
+  --ink-400: #5A5A5A;       /* Subtle text */
+  --ink-300: #8A8A8A;       /* Secondary text */
+  --ink-200: #B8B8B8;       /* Body text on dark */
+  --ink-100: #F4F1E8;       /* Primary text (ivory) */
+
+  /* Signal colors (data viz) */
+  --signal-up: #008751;     /* Emerald - rising */
+  --signal-down: #C8483E;   /* Red - falling */
+  --signal-warn: #D4AF37;   /* Gold - caution */
+  --signal-info: #4DA3FF;   /* Sky blue - neutral */
+
+  --background: var(--midnight);
+  --foreground: var(--ivory);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-midnight: var(--midnight);
+  --color-gold: var(--gold);
+  --color-emerald: var(--emerald);
+  --color-ivory: var(--ivory);
+
+  --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-ink-300: var(--ink-300);
+  --color-ink-200: var(--ink-200);
+  --color-ink-100: var(--ink-100);
+
+  --color-signal-up: var(--signal-up);
+  --color-signal-down: var(--signal-down);
+  --color-signal-warn: var(--signal-warn);
+  --color-signal-info: var(--signal-info);
+
+  --font-display: var(--font-playfair);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--midnight);
+  color: var(--ivory);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--midnight);
+}
+
+/* Scrollbar — keep it minimal and on-brand */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--ink-900); }
+::-webkit-scrollbar-thumb { background: var(--ink-600); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* Utility: gradient overlays for hero sections */
+.gradient-mask-bottom {
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.gradient-mask-right {
+  mask-image: linear-gradient(to right, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
+}
+
+/* Pulse: subtle live indicator */
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(212, 175, 55, 0); }
+}
+.pulse-gold { animation: pulse-gold 2s ease-in-out infinite; }
+
+@keyframes pulse-emerald {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 135, 81, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 135, 81, 0); }
+}
+.pulse-emerald { animation: pulse-emerald 2s ease-in-out infinite; }
+
+/* Number ticker — used for the pulse dashboard */
+@keyframes ticker-up {
+  0% { color: var(--signal-up); }
+  100% { color: var(--ivory); }
+}
+.ticker-flash-up { animation: ticker-up 0.6s ease-out; }
+
+@keyframes ticker-down {
+  0% { color: var(--signal-down); }
+  100% { color: var(--ivory); }
+}
+.ticker-flash-down { animation: ticker-down 0.6s ease-out; }
