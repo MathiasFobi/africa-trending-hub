@@ -259,7 +259,7 @@ async function triggerDeploy(): Promise<void> {
 // auto-deploys the live site with the fresh content.
 // ============================================================================
 
-async function commitArticlesToGitHub(articles: Article[]): Promise<boolean> {
+async function commitArticlesToGitHub(articles: Article[], log: string[]): Promise<boolean> {
   const ghToken = process.env.GITHUB_TOKEN;
   const ghRepo = process.env.GITHUB_REPO; // e.g. "MathiasFobi/africa-trending-hub"
   const ghBranch = process.env.GITHUB_BRANCH ?? "main";
@@ -429,7 +429,7 @@ export async function GET(req: NextRequest) {
     result.articles = novel.map((a) => ({ slug: a.slug, title: a.title, source: a.sourceName ?? "unknown" }));
     await postTelegram(novel);
     // Write new articles to the GitHub repo so Vercel auto-deploys them
-    const committed = await commitArticlesToGitHub(novel);
+    const committed = await commitArticlesToGitHub(novel, log);
     if (!committed) {
       // Fallback: trigger the deploy hook (won't add new content, but at least
       // signals a deploy happened)
