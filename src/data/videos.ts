@@ -112,7 +112,7 @@ export const videoPlaylists: VideoPlaylist[] = [
     description:
       "From Fela's shrine in Lagos to sold-out arenas in London and Atlanta. The story of how West African pop conquered the world.",
     cover:
-      "https://images.unsplash.com/photo-1571266028243-d220c6a04e91?w=1600&q=80",
+      "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1600&q=80",
     curator: "AfricaTrendingHub Music Desk",
     category: "music",
     totalDuration: "1h 52m",
@@ -245,7 +245,7 @@ export const videoPlaylists: VideoPlaylist[] = [
     description:
       "Long-form reporting on the visual artists, writers, and thinkers reshaping how the world sees the continent.",
     cover:
-      "https://images.unsplash.com/photo-1531243260586-a3a2c4ff7b95?w=1600&q=80",
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1600&q=80",
     curator: "AfricaTrendingHub Culture Desk",
     category: "culture",
     totalDuration: "1h 45m",

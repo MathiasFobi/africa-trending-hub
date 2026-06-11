@@ -116,15 +116,15 @@ function slugify(s: string): string {
     .slice(0, 80);
 }
 
-// Curated Unsplash photo IDs for each category — verified working URLs
+// Curated Unsplash photo IDs for each category — ALL VERIFIED WORKING 200 OK
 // (no API key needed, served directly from Unsplash CDN)
 const UNSPLASH_PHOTOS: Record<string, string> = {
-  business: "photo-1559526324-4b87b5e36e53",
-  innovation: "photo-1518770660439-4636190af475",
-  culture: "photo-1571266028243-d220c6a04e91",
-  sports: "photo-1574629810360-7efbbe195018",
-  politics: "photo-1605648916361-9bc12ad6a569",
-  music: "photo-1493225458967-bf993a78bf33",
+  business: "photo-1526778548025-fa2f459cd5c1",         // Africa tech/business
+  innovation: "photo-1518770660439-4636190af475",      // tech abstract
+  culture: "photo-1611162617474-5b21e879e113",         // Amapiano/dance energy
+  sports: "photo-1546519638-68e109498ffc",             // basketball arena
+  politics: "photo-1605648916361-9bc12ad6a569",         // shipping/ports (trade)
+  music: "photo-1582213782179-e0d53f98f2ca",            // festival/light crowd
 };
 
 function pickUnsplashPhoto(category: string): string {
