@@ -24,10 +24,25 @@ export async function generateStaticParams() {
   return startups.map((s) => ({ slug: s.slug }));
 }
 
+const SITE_URL = "https://africa-trending-hub.vercel.app";
+
+function ogUrl(params: { kind: string; title: string; subtitle?: string; eyebrow?: string }): string {
+  const sp = new URLSearchParams({ kind: params.kind, title: params.title });
+  if (params.subtitle) sp.set("subtitle", params.subtitle);
+  if (params.eyebrow) sp.set("eyebrow", params.eyebrow);
+  return `${SITE_URL}/opengraph-image?${sp.toString()}`;
+}
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const s = startups.find((x) => x.slug === slug);
   if (!s) return { title: "Startup not found" };
+  const ogImage = ogUrl({
+    kind: "Startup",
+    title: s.name,
+    subtitle: s.description,
+    eyebrow: `${s.sector} · ${s.stage} · ${s.hq}`,
+  });
   return {
     title: `${s.name} — ${s.sector}`,
     description: s.description,
@@ -38,11 +53,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: `${s.name} — ${s.sector} (${s.stage})`,
       description: s.description,
       siteName: "AfricaTrendingHub",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: s.name }],
     },
     twitter: {
       card: "summary_large_image",
       title: s.name,
       description: s.description,
+      images: [ogImage],
     },
   };
 }

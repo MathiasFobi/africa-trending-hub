@@ -13,11 +13,26 @@ export async function generateStaticParams() {
   return articles.map((a) => ({ slug: a.slug }));
 }
 
+const SITE_URL = "https://africa-trending-hub.vercel.app";
+
+function ogUrl(params: { kind: string; title: string; subtitle?: string; eyebrow?: string }): string {
+  const sp = new URLSearchParams({ kind: params.kind, title: params.title });
+  if (params.subtitle) sp.set("subtitle", params.subtitle);
+  if (params.eyebrow) sp.set("eyebrow", params.eyebrow);
+  return `${SITE_URL}/opengraph-image?${sp.toString()}`;
+}
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) return { title: "Article not found" };
   const cat = categories.find((c) => c.slug === article.category);
+  const ogImage = ogUrl({
+    kind: "Article",
+    title: article.title,
+    subtitle: article.excerpt,
+    eyebrow: cat?.label,
+  });
   return {
     title: article.title,
     description: article.excerpt,
@@ -32,11 +47,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       authors: [article.author],
       tags: article.tags,
       siteName: "AfricaTrendingHub",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: article.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.excerpt,
+      images: [ogImage],
     },
   };
 }

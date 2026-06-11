@@ -61,11 +61,20 @@ export const metadata: Metadata = {
     description: site.description,
     url: SITE_URL,
     locale: "en_US",
+    images: [
+      {
+        url: `${SITE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "AfricaTrendingHub — Tracking the Pulse of a Rising Continent",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AfricaTrendingHub",
     description: "Tracking the Pulse of a Rising Continent.",
+    images: [`${SITE_URL}/opengraph-image`],
   },
   robots: {
     index: true,
