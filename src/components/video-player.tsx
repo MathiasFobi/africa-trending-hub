@@ -12,7 +12,20 @@ type Props = {
   className?: string;
 };
 
-export function VideoPlayer({ video, autoplay, onEnded, className }: Props) {
+type YTPlayer = {
+  new (el: HTMLIFrameElement, config: object): {
+    destroy: () => void;
+  };
+};
+type YT = {
+  Player: YTPlayer;
+};
+declare global {
+  interface Window {
+    YT?: { Player?: YTPlayer };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}export function VideoPlayer({ video, autoplay, onEnded, className }: Props) {
   // YouTube videos play via iframe (simplest, no plugin needed).
   // For mp4/hls we'd use video.js, but our fixture data is all YouTube.
   if (video.source === "youtube") {
@@ -69,20 +82,67 @@ function YouTubeEmbed({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activated, setActivated] = useState(autoplay ?? false);
+  const [ended, setEnded] = useState(false);
+  const handleEnded = () => {
+    setEnded(true);
+    onEnded?.();
+  };
 
-  // Detect iframe API postMessage events for "ended" (best-effort — YouTube
-  // doesn't expose a direct end callback without the JS API, but we can
-  // watch the player's internal time)
+  // Track iframes via window.YT.Player API. We init it on activation; pass
+  // onEnded as a callback to the state-change handler.
   useEffect(() => {
-    if (!activated || !onEnded) return;
-    const interval = setInterval(() => {
-      const iframe = containerRef.current?.querySelector("iframe");
-      if (!iframe) return;
-      // YouTube IFrame API: postMessage with info delivery
-      // We don't have a direct API handle, so we use a coarse watcher
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [activated, onEnded]);
+    if (!activated) return;
+    const iframe = containerRef.current?.querySelector<HTMLIFrameElement>("iframe");
+    if (!iframe) return;
+    setEnded(false);
+
+    // Wait for the YouTube IFrame API to be ready
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let player: any = null;
+    let pollHandle: ReturnType<typeof setInterval> | null = null;
+    const init = () => {
+      if (typeof window === "undefined" || !window.YT?.Player) return;
+      player = new window.YT.Player(iframe, {
+        events: {
+          onStateChange: (e: { data: number }) => {
+            // 0 = ended
+            if (e.data === 0 && onEnded) {
+              setEnded(true);
+              onEnded();
+            }
+          },
+        },
+      });
+    };
+    if (window.YT?.Player) {
+      init();
+    } else {
+      // Load the YouTube IFrame API script
+      const existing = document.querySelector(
+        'script[src="https://www.youtube.com/iframe_api"]',
+      ) as HTMLScriptElement | null;
+      if (!existing) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+      }
+      pollHandle = setInterval(() => {
+        if (window.YT?.Player) {
+          if (pollHandle) clearInterval(pollHandle);
+          init();
+        }
+      }, 200);
+    }
+
+    return () => {
+      if (pollHandle) clearInterval(pollHandle);
+      try {
+        player?.destroy();
+      } catch {
+        // noop
+      }
+    };
+  }, [activated, onEnded, videoId]);
 
   if (!activated) {
     return (
@@ -132,6 +192,23 @@ function YouTubeEmbed({
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
       />
+      {/* Up-next hint: shown when video has ended, fades out after 6s */}
+      {ended && onEnded && (
+        <div className="absolute inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center pointer-events-none animate-in fade-in duration-500">
+          <div className="text-center px-6">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-gold mb-2">
+              Up next
+            </div>
+            <div className="text-ivory text-lg sm:text-xl font-display font-bold mb-3 max-w-md mx-auto line-clamp-2">
+              {title}
+            </div>
+            <div className="flex items-center justify-center gap-2 text-[10px] font-mono text-ink-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+              Loading next video…
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
