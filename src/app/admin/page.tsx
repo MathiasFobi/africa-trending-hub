@@ -142,11 +142,16 @@ export default async function AdminPage() {
               </div>
               {digest.articles && digest.articles.length > 0 && (
                 <div className="border-t border-ink-700/60 pt-3 mt-3">
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-ink-400 mb-2">
-                    Last published
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-ink-400">
+                      Last published
+                    </div>
+                    <div className="text-[10px] font-mono text-ink-500">
+                      showing {Math.min(10, digest.articles.length)} of {digest.articles.length}
+                    </div>
                   </div>
                   <ul className="space-y-1.5">
-                    {digest.articles.map((a) => (
+                    {digest.articles.slice(0, 10).map((a) => (
                       <li
                         key={a.slug}
                         className="text-sm text-ivory flex items-start gap-2"
