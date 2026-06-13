@@ -1,0 +1,26 @@
+# Exclude sub-projects that confuse pnpm recursive install
+MaxClawLamma/
+antfarm/
+bossmade-events/
+bossmade-events-nextjs/
+iptv-site/
+prompt-diva-site/
+dr-fobi-tribute/
+agents/
+skills/
+
+# Build artifacts
+.next/
+node_modules/
+.turbo/
+.vercel/
+
+# OS / editor
+.DS_Store
+*.log
+.env*.local
+.env
+
+# Antfarm internals
+*.sqlite
+*.db
