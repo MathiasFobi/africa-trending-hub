@@ -92,6 +92,7 @@ export type MansaIndex = {
   slug?: string;
   name?: string;
   exchange?: string;
+  exchange_code?: string;
   currency?: string;
   value?: number;
   currentPrice?: number;
@@ -154,10 +155,22 @@ function norm(s: string | undefined): string {
   return (s ?? "").toLowerCase();
 }
 
+function alnum(s: string | undefined): string {
+  return norm(s).replace(/[^a-z0-9]/g, "");
+}
+
+/** Exchange identifier for an index record (handles field-name variants). */
+function indexExchange(i: MansaIndex): string {
+  return norm(i.exchange) || norm(i.exchange_code);
+}
+
 /**
- * Find the best-matching index for an exchange. Prefers an exact benchmark
- * (e.g. NGX ASI), then anything with "all share" in the name, then the first
- * index on that exchange.
+ * Find the best-matching index for an exchange.
+ * Pass 1: strict — record's exchange field equals the requested code.
+ * Pass 2: loose — exchange code appears as a prefix in code/slug or in the name
+ * (covers lists that omit the exchange field or use variants like "NIGERIA").
+ * Within the pool, prefers a code-hint match (e.g. ngx-asi), then an
+ * "all share" benchmark. Returns null rather than a wrong-exchange index.
  */
 export function matchMansaIndex(
   indices: MansaIndex[],
@@ -165,18 +178,27 @@ export function matchMansaIndex(
   codeHints: string[]
 ): MansaIndex | null {
   const ex = norm(exchange);
-  const pool = indices.filter((i) => norm(i.exchange) === ex);
+  const exA = alnum(exchange);
+
+  let pool = indices.filter((i) => indexExchange(i) === ex);
+  if (pool.length === 0 && exA) {
+    pool = indices.filter((i) => {
+      const code = alnum(i.code);
+      const slug = alnum(i.slug);
+      return code.startsWith(exA) || slug.startsWith(exA) || norm(i.name).includes(ex);
+    });
+  }
   if (pool.length === 0) return null;
+
   for (const hint of codeHints) {
-    const h = norm(hint);
-    const hit = pool.find(
-      (i) => norm(i.code) === h || norm(i.slug) === h || norm(i.code).replace(/[^a-z0-9]/g, "") === h.replace(/[^a-z0-9]/g, "")
-    );
+    const h = hint.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (!h) continue;
+    const hit = pool.find((i) => alnum(i.code) === h || alnum(i.slug) === h);
     if (hit) return hit;
   }
-  const allShare = pool.find((i) => norm(i.name).includes("all share") || norm(i.name).includes("all-share"));
+  const allShare = pool.find((i) => /all[\s-]?share/.test(norm(i.name)));
   if (allShare) return allShare;
-  return pool[0];
+  return null;
 }
 
 /** Find a commodity by name/code substring, e.g. "brent". */
