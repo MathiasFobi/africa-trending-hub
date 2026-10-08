@@ -5,7 +5,10 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 // GET /api/cron/pulse-refresh — Vercel Cron warms the in-memory pulse snapshot
-// every 15 minutes so visitors get fresh data instead of a cold-start build.
+// once daily (Hobby plan allows daily crons only) so the first visitors of the
+// day get fresh data instead of a cold-start build. Intraday freshness comes
+// from on-demand rebuilds: /api/pulse rebuilds when its 15-minute cache
+// expires, and Mansa-backed items refresh hourly within that.
 // If CRON_SECRET is set, the request must carry it as a Bearer token.
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET ?? "";

@@ -12,8 +12,9 @@
 // - AFR-VC is derived from our own fundingTrends fixtures (latest quarter vs
 //   the one before it), so it stays in sync with the data we publish.
 //
-// A Vercel cron hits /api/cron/pulse-refresh every 15 minutes to keep the
-// snapshot warm; if the instance is cold, the first request builds it on demand.
+// A Vercel cron hits /api/cron/pulse-refresh once daily (Hobby plan limit) to
+// warm the snapshot; intraday, the first request after the 15-minute cache
+// expires rebuilds it on demand.
 
 import { PULSE_SYMBOLS, type PulseSymbolConfig } from "./config";
 import {
