@@ -13,26 +13,60 @@ type Props = {
   className?: string;
 };
 
+/** Text-safe category colors on light surfaces. */
 const categoryColor: Record<string, string> = {
-  business: "text-emerald border-emerald/40",
-  culture: "text-gold border-gold/40",
-  innovation: "text-ivory border-ivory/40",
-  sports: "text-emerald border-emerald/40",
-  politics: "text-gold border-gold/40",
-  music: "text-ivory border-ivory/40",
+  business: "text-emerald-deep border-emerald-600/30",
+  culture: "text-gold-deep border-gold-deep/30",
+  innovation: "text-coal border-coal/20",
+  sports: "text-emerald-deep border-emerald-600/30",
+  politics: "text-gold-deep border-gold-deep/30",
+  music: "text-coal border-coal/20",
 };
 
 const categoryBg: Record<string, string> = {
-  business: "bg-emerald/10",
-  culture: "bg-gold/10",
-  innovation: "bg-ivory/10",
-  sports: "bg-emerald/10",
-  politics: "bg-gold/10",
-  music: "bg-ivory/10",
+  business: "bg-emerald-600/10",
+  culture: "bg-gold/15",
+  innovation: "bg-coal/5",
+  sports: "bg-emerald-600/10",
+  politics: "bg-gold/15",
+  music: "bg-coal/5",
 };
 
 const categoryLabel = (slug: string) =>
   categories.find((c) => c.slug === slug)?.label ?? slug;
+
+function CardImage({
+  article,
+  cat,
+  large,
+}: {
+  article: Article;
+  cat: string;
+  large?: boolean;
+}) {
+  if (article.image) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={article.image}
+        alt={article.imageCaption ?? article.title}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    );
+  }
+  return (
+    <div className="absolute inset-0 bg-gradient-to-br from-cream via-line to-cream flex items-center justify-center">
+      <div
+        className={cn(
+          "text-faint/60 font-display font-bold select-none",
+          large ? "text-[120px]" : "text-[80px]"
+        )}
+      >
+        {cat.split(" ")[0].slice(0, 2)}
+      </div>
+    </div>
+  );
+}
 
 export function ArticleCard({ article, variant = "standard", className }: Props) {
   const color = categoryColor[article.category];
@@ -44,32 +78,19 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
       <Link
         href={`/article/${article.slug}`}
         className={cn(
-          "group block relative overflow-hidden rounded-sm bg-ink-800 border border-ink-700 hover:border-gold/40 transition-colors",
+          "group block relative overflow-hidden rounded-2xl bg-card border border-line hover:border-gold/60 hover:shadow-lg transition-all",
           className
         )}
       >
-        <div className="aspect-[16/10] relative bg-ink-800 overflow-hidden">
-          {article.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={article.image}
-              alt={article.imageCaption ?? article.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-ink-700 via-ink-800 to-ink-900 flex items-center justify-center">
-              <div className="text-ink-600 text-[120px] font-display font-bold opacity-20 select-none">
-                {cat.split(" ")[0].slice(0, 2)}
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/60 to-transparent" />
+        <div className="aspect-[16/10] relative bg-cream overflow-hidden">
+          <CardImage article={article} cat={cat} large />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute top-4 left-4 flex items-center gap-2">
-            <span className={cn("px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest border rounded-sm", color, bg)}>
+            <span className={cn("px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest border rounded-full bg-black/40 text-white border-white/20 backdrop-blur-sm")}>
               {cat}
             </span>
             {article.trending && (
-              <span className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest border border-emerald/40 text-emerald bg-emerald/10 rounded-sm flex items-center gap-1">
+              <span className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest rounded-full bg-emerald/90 text-white flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 Trending
               </span>
@@ -77,21 +98,21 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
           </div>
         </div>
         <div className="p-6 sm:p-8">
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ivory leading-[1.1] group-hover:text-gold transition-colors">
+          <h2 className="font-extrabold tracking-tight text-3xl sm:text-4xl text-coal leading-[1.1] group-hover:text-gold-deep transition-colors">
             {article.title}
           </h2>
-          <p className="mt-4 text-ink-200 leading-relaxed">{article.excerpt}</p>
-          <div className="mt-5 flex items-center gap-3 text-xs font-mono text-ink-300">
-            <span className="text-ivory font-semibold">{article.author}</span>
+          <p className="mt-4 text-smoke leading-relaxed">{article.excerpt}</p>
+          <div className="mt-5 flex items-center gap-3 text-xs font-mono text-faint">
+            <span className="text-coal font-semibold">{article.author}</span>
             {article.authorRole && (
               <>
-                <span className="text-ink-500">·</span>
+                <span>·</span>
                 <span>{article.authorRole}</span>
               </>
             )}
-            <span className="text-ink-500">·</span>
+            <span>·</span>
             <span>{formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}</span>
-            <span className="text-ink-500">·</span>
+            <span>·</span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {article.readMinutes} min
@@ -107,38 +128,25 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
       <Link
         href={`/article/${article.slug}`}
         className={cn(
-          "group block relative overflow-hidden rounded-sm bg-ink-800 border border-ink-700 hover:border-gold/40 transition-colors",
+          "group block relative overflow-hidden rounded-2xl bg-card border border-line hover:border-gold/60 hover:shadow-lg transition-all",
           className
         )}
       >
-        <div className="aspect-[16/9] relative bg-ink-800 overflow-hidden">
-          {article.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={article.image}
-              alt={article.imageCaption ?? article.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-ink-700 to-ink-900 flex items-center justify-center">
-              <div className="text-ink-600 text-[80px] font-display font-bold opacity-20 select-none">
-                {cat.split(" ")[0].slice(0, 2)}
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-midnight/95 to-transparent" />
-          <span className={cn("absolute top-3 left-3 px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest border rounded-sm", color, bg)}>
+        <div className="aspect-[16/9] relative bg-cream overflow-hidden">
+          <CardImage article={article} cat={cat} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <span className="absolute top-3 left-3 px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm">
             {cat}
           </span>
         </div>
         <div className="p-5">
-          <h3 className="font-display font-bold text-xl text-ivory leading-tight group-hover:text-gold transition-colors">
+          <h3 className="font-extrabold tracking-tight text-xl text-coal leading-tight group-hover:text-gold-deep transition-colors">
             {article.title}
           </h3>
-          <p className="mt-2 text-sm text-ink-300 line-clamp-2">{article.excerpt}</p>
-          <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-ink-400">
+          <p className="mt-2 text-sm text-smoke line-clamp-2">{article.excerpt}</p>
+          <div className="mt-3 flex items-center gap-2 text-[11px] font-mono text-faint">
             <span>{article.author}</span>
-            <span className="text-ink-600">·</span>
+            <span>·</span>
             <span>{article.readMinutes} min</span>
           </div>
         </div>
@@ -151,15 +159,15 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
       <Link
         href={`/article/${article.slug}`}
         className={cn(
-          "group flex items-start gap-4 py-4 border-b border-ink-700/60 hover:border-gold/40 transition-colors",
+          "group flex items-start gap-4 py-4 border-b border-line",
           className
         )}
       >
         <div className="shrink-0 w-16 text-right">
-          <div className="text-3xl font-display font-bold text-gold leading-none">
+          <div className="text-3xl font-extrabold tracking-tight text-gold-deep leading-none">
             {String(article.readMinutes).padStart(2, "0")}
           </div>
-          <div className="text-[10px] font-mono uppercase text-ink-400 mt-1">min read</div>
+          <div className="text-[10px] font-mono uppercase text-faint mt-1">min read</div>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
@@ -167,16 +175,16 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
               {cat}
             </span>
             {article.trending && (
-              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald flex items-center gap-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-deep flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 Hot
               </span>
             )}
           </div>
-          <h3 className="font-display font-semibold text-lg text-ivory leading-tight group-hover:text-gold transition-colors">
+          <h3 className="font-bold text-lg text-coal leading-tight group-hover:text-gold-deep transition-colors">
             {article.title}
           </h3>
-          <div className="mt-1.5 text-[11px] font-mono text-ink-400">
+          <div className="mt-1.5 text-[11px] font-mono text-faint">
             {article.author} · {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
           </div>
         </div>
@@ -188,15 +196,15 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
     return (
       <Link
         href={`/article/${article.slug}`}
-        className={cn("group block py-3", className)}
+        className={cn("group block py-3 border-b border-line/70 last:border-0", className)}
       >
         <div className={cn("text-[10px] font-mono uppercase tracking-widest mb-1", color.split(" ")[0])}>
           {cat}
         </div>
-        <h3 className="font-display font-semibold text-base text-ivory leading-snug group-hover:text-gold transition-colors">
+        <h3 className="font-bold text-[15px] text-coal leading-snug group-hover:text-gold-deep transition-colors">
           {article.title}
         </h3>
-        <div className="mt-1 text-[10px] font-mono text-ink-400">
+        <div className="mt-1 text-[10px] font-mono text-faint">
           {article.readMinutes} min · {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
         </div>
       </Link>
@@ -208,21 +216,21 @@ export function ArticleCard({ article, variant = "standard", className }: Props)
     <Link
       href={`/article/${article.slug}`}
       className={cn(
-        "group block bg-ink-800/50 border border-ink-700/60 rounded-sm overflow-hidden hover:border-gold/40 transition-colors",
+        "group block bg-card border border-line rounded-2xl overflow-hidden hover:border-gold/60 hover:shadow-md transition-all",
         className
       )}
     >
       <div className="p-5">
         <div className="flex items-center gap-2 mb-3">
-          <span className={cn("px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest border rounded-sm", color, bg)}>
+          <span className={cn("px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest border rounded-full", color, bg)}>
             {cat}
           </span>
         </div>
-        <h3 className="font-display font-bold text-lg text-ivory leading-tight group-hover:text-gold transition-colors">
+        <h3 className="font-extrabold tracking-tight text-lg text-coal leading-tight group-hover:text-gold-deep transition-colors">
           {article.title}
         </h3>
-        <p className="mt-2 text-sm text-ink-300 line-clamp-3">{article.excerpt}</p>
-        <div className="mt-3 text-[11px] font-mono text-ink-400">
+        <p className="mt-2 text-sm text-smoke line-clamp-3">{article.excerpt}</p>
+        <div className="mt-3 text-[11px] font-mono text-faint">
           {article.author} · {article.readMinutes} min
         </div>
       </div>

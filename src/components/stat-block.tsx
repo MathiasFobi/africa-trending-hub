@@ -36,19 +36,19 @@ export function StatBlock({
   return (
     <div
       className={cn(
-        "p-5 bg-ink-800/50 border border-ink-700/60 rounded-sm",
+        "p-5 bg-card border border-line rounded-2xl shadow-[0_1px_2px_rgba(30,27,20,0.04)]",
         className
       )}
     >
-      <div className="text-[10px] font-mono uppercase tracking-widest text-ink-400 mb-2">
+      <div className="text-[10px] font-mono uppercase tracking-widest text-faint mb-2">
         {label}
       </div>
       <div
         className={cn(
-          "font-display font-bold text-2xl sm:text-3xl tabular-nums leading-none",
-          emphasis === "gold" && "text-gold",
-          emphasis === "emerald" && "text-emerald",
-          emphasis === "ivory" && "text-ivory"
+          "font-extrabold tracking-tight text-2xl sm:text-3xl tabular-nums leading-none",
+          emphasis === "gold" && "text-gold-deep",
+          emphasis === "emerald" && "text-emerald-deep",
+          emphasis === "ivory" && "text-coal"
         )}
       >
         {display}
@@ -61,7 +61,7 @@ export function StatBlock({
                 "flex items-center gap-0.5",
                 up && "text-signal-up",
                 down && "text-signal-down",
-                !up && !down && "text-ink-300"
+                !up && !down && "text-smoke"
               )}
             >
               {up && <ArrowUp className="w-3 h-3" />}
@@ -70,7 +70,7 @@ export function StatBlock({
               {formatPercent(change)}
             </span>
           )}
-          {hint && <span className="text-ink-400">{hint}</span>}
+          {hint && <span className="text-faint">{hint}</span>}
         </div>
       )}
     </div>
