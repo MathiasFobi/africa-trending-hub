@@ -104,11 +104,11 @@ export default async function ArticlePage({ params }: { params: Params }) {
       )}
 
       {/* Hero */}
-      <header className="border-b border-ink-700/60 bg-gradient-to-b from-ink-800/40 to-midnight">
+      <header className="border-b border-line bg-gradient-to-b from-cream to-paper">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-8 sm:pt-14 sm:pb-10">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-ink-300 hover:text-gold transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-smoke hover:text-gold-deep transition-colors mb-6"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to home
@@ -117,34 +117,34 @@ export default async function ArticlePage({ params }: { params: Params }) {
           <div className="flex items-center gap-2 mb-4">
             <Link
               href={`/category/${article.category}`}
-              className="text-[11px] font-mono uppercase tracking-widest text-gold hover:text-ivory transition-colors"
+              className="text-[11px] font-mono uppercase tracking-widest text-gold-deep hover:text-coal transition-colors"
             >
               {cat?.label}
             </Link>
             {article.trending && (
-              <span className="text-[11px] font-mono uppercase tracking-widest text-emerald flex items-center gap-1">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-deep flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 Trending
               </span>
             )}
             {article.featured && (
-              <span className="text-[11px] font-mono uppercase tracking-widest text-ivory bg-ivory/10 px-1.5 py-0.5 rounded-sm">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-coal bg-coal/5 border border-line px-1.5 py-0.5 rounded-full">
                 Featured
               </span>
             )}
           </div>
 
-          <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-ivory leading-[1.1] tracking-tight">
+          <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-coal leading-[1.1] tracking-tight">
             {article.title}
           </h1>
 
-          <p className="mt-5 text-lg text-ink-200 leading-relaxed">{article.excerpt}</p>
+          <p className="mt-5 text-lg text-smoke leading-relaxed">{article.excerpt}</p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-ink-300">
+          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-smoke">
             <span className="flex items-center gap-1.5">
               <User className="w-3.5 h-3.5" />
-              <span className="text-ivory font-semibold">{article.author}</span>
-              {article.authorRole && <span className="text-ink-400">· {article.authorRole}</span>}
+              <span className="text-coal font-semibold">{article.author}</span>
+              {article.authorRole && <span className="text-faint">· {article.authorRole}</span>}
             </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
@@ -156,7 +156,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
             </span>
             <button
               type="button"
-              className="flex items-center gap-1.5 text-ink-300 hover:text-gold transition-colors"
+              className="flex items-center gap-1.5 text-smoke hover:text-gold-deep transition-colors"
             >
               <Share2 className="w-3.5 h-3.5" />
               Share
@@ -172,24 +172,24 @@ export default async function ArticlePage({ params }: { params: Params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        <div className="prose prose-invert max-w-none">
+        <div className="max-w-none">
           {/* Lead paragraph */}
-          <p className="text-xl text-ivory leading-relaxed font-light mb-6">{article.excerpt}</p>
+          <p className="text-xl text-coal leading-relaxed font-light mb-6">{article.excerpt}</p>
 
           {/* Filler body — fixture data is summary-only, so render a structured
               report with the available metadata + a placeholder body so the
               detail page has substance until real article copy is added. */}
-          <p className="text-ink-200 leading-relaxed mb-5">
+          <p className="text-smoke leading-relaxed mb-5">
             {article.title} is the subject of our latest {cat?.label} dispatch from
             AfricaTrendingHub. This article is currently published as a {article.readMinutes}-minute
             briefing — the headline, framing, and reporting are in place; the long-form body and
             supporting field notes are wired up and ready to be filled with primary reporting.
           </p>
 
-          <h2 className="font-display font-bold text-2xl text-ivory mt-10 mb-4">What we know</h2>
-          <p className="text-ink-200 leading-relaxed mb-5">
+          <h2 className="font-display font-bold text-2xl text-coal mt-10 mb-4">What we know</h2>
+          <p className="text-smoke leading-relaxed mb-5">
             The story cuts across the {cat?.label.toLowerCase()} beat. Filed by{" "}
-            <span className="text-ivory font-semibold">{article.author}</span>
+            <span className="text-coal font-semibold">{article.author}</span>
             {article.authorRole && (
               <>, {article.authorRole}</>
             )}
@@ -201,8 +201,8 @@ export default async function ArticlePage({ params }: { params: Params }) {
             )}
           </p>
 
-          <h2 className="font-display font-bold text-2xl text-ivory mt-10 mb-4">Why it matters</h2>
-          <p className="text-ink-200 leading-relaxed mb-5">
+          <h2 className="font-display font-bold text-2xl text-coal mt-10 mb-4">Why it matters</h2>
+          <p className="text-smoke leading-relaxed mb-5">
             Africa's news cycle moves fast, and the {cat?.label.toLowerCase()} sector is one of
             the most-watched verticals in our coverage. This piece lands in the middle of an
             active reporting window — readers tracking the category will want to bookmark it.
@@ -210,12 +210,12 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
           {article.tags && article.tags.length > 0 && (
             <>
-              <h2 className="font-display font-bold text-2xl text-ivory mt-10 mb-4">Tags</h2>
+              <h2 className="font-display font-bold text-2xl text-coal mt-10 mb-4">Tags</h2>
               <div className="flex flex-wrap gap-2 mb-5">
                 {article.tags.map((t) => (
                   <span
                     key={t}
-                    className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-ink-200 bg-ink-800 border border-ink-700 px-2.5 py-1 rounded-sm"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-smoke bg-cream border border-line px-2.5 py-1 rounded-full"
                   >
                     <Tag className="w-3 h-3" />
                     {t}
@@ -225,11 +225,11 @@ export default async function ArticlePage({ params }: { params: Params }) {
             </>
           )}
 
-          <div className="mt-10 p-5 border border-gold/30 bg-gold/5 rounded-sm">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-gold mb-1">
+          <div className="mt-10 p-5 border border-gold/40 bg-gold/10 rounded-2xl">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-gold-deep mb-1">
               Editor's note
             </div>
-            <p className="text-sm text-ink-200 leading-relaxed">
+            <p className="text-sm text-smoke leading-relaxed">
               The full long-form body of this article is being prepared for publication. In the
               meantime, the headline, byline, and tags are locked, the article is indexable, and
               the URL is stable. Subscribe to our daily pulse to be notified when the long-form
@@ -241,9 +241,9 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="border-t border-ink-700/60 bg-ink-900/40">
+        <section className="border-t border-line bg-cream/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-            <div className="font-display font-bold text-xl text-gold mb-5">
+            <div className="font-extrabold tracking-tight text-xl text-coal mb-5">
               More from {cat?.label}
             </div>
             <div className="grid sm:grid-cols-3 gap-4">
