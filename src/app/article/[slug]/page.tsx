@@ -105,7 +105,7 @@ export default async function ArticlePage({ params }: { params: Params }) {
 
       {/* Hero */}
       <header className="border-b border-line bg-gradient-to-b from-cream to-paper">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-8 sm:pt-14 sm:pb-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-8 sm:pt-14 sm:pb-10">
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-smoke hover:text-gold-deep transition-colors mb-6"

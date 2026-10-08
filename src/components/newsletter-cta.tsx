@@ -175,7 +175,7 @@ export function NewsletterCta({ source = "home", variant = "default", className 
               <label className="text-xs font-mono uppercase tracking-widest text-smoke mb-2 block">
                 Your email
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex-1 relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-faint" />
                   <input

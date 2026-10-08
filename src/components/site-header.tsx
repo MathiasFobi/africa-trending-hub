@@ -28,36 +28,36 @@ export function SiteHeader() {
     <>
       {/* Live strip — dark ticker teaser above the chrome */}
       <div className="bg-midnight text-ink-300 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 flex items-center gap-3 text-[11px] font-mono">
-          <span className="flex items-center gap-1.5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 flex items-center gap-3 text-[11px] font-mono overflow-x-auto no-scrollbar whitespace-nowrap">
+          <span className="flex items-center gap-1.5 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald pulse-emerald" />
             <span className="text-emerald font-semibold">LIVE</span>
           </span>
-          <span className="text-ink-500">·</span>
-          <span>NGX All-Share <span className="text-signal-up">+0.42%</span></span>
-          <span className="text-ink-500">·</span>
-          <span>USD/NGN ₦1,485 <span className="text-signal-down">-0.18%</span></span>
-          <span className="text-ink-500">·</span>
-          <span>BTC $108,420 <span className="text-signal-up">+1.4%</span></span>
-          <span className="text-ink-500 hidden md:inline">·</span>
-          <span className="hidden md:inline text-gold">Q2 African VC: $2.85B deployed</span>
+          <span className="text-ink-500 shrink-0">·</span>
+          <span className="shrink-0">NGX All-Share <span className="text-signal-up">+0.42%</span></span>
+          <span className="text-ink-500 shrink-0">·</span>
+          <span className="shrink-0">USD/NGN ₦1,485 <span className="text-signal-down">-0.18%</span></span>
+          <span className="text-ink-500 shrink-0">·</span>
+          <span className="shrink-0">BTC $108,420 <span className="text-signal-up">+1.4%</span></span>
+          <span className="text-ink-500 hidden md:inline shrink-0">·</span>
+          <span className="hidden md:inline text-gold shrink-0">Q2 African VC: $2.85B deployed</span>
         </div>
       </div>
 
       <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur border-b border-line">
         {/* Logo row */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 sm:h-20">
             {/* Left actions */}
             <div className="flex items-center gap-1 justify-start">
               <button
-                className="p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+                className="p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
               </button>
               <button
-                className="p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+                className="hidden sm:block p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
                 aria-label="Share"
               >
                 <Share2 className="w-5 h-5" />
@@ -69,7 +69,7 @@ export function SiteHeader() {
               <div className="w-9 h-9 rounded-lg bg-gold flex items-center justify-center group-hover:bg-gold-deep transition-colors shadow-sm">
                 <TrendingUp className="w-5 h-5 text-midnight" strokeWidth={2.5} />
               </div>
-              <span className="font-extrabold text-[22px] sm:text-2xl tracking-tight text-coal">
+              <span className="font-extrabold text-lg sm:text-2xl tracking-tight text-coal whitespace-nowrap">
                 {site.name}
               </span>
             </Link>
@@ -77,13 +77,13 @@ export function SiteHeader() {
             {/* Right actions */}
             <div className="flex items-center gap-1 justify-end">
               <button
-                className="p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+                className="p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
                 aria-label="Trending now"
               >
                 <Zap className="w-5 h-5" />
               </button>
               <button
-                className="relative p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+                className="relative p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
                 aria-label="Saved stories"
               >
                 <Bookmark className="w-5 h-5" />
@@ -93,7 +93,7 @@ export function SiteHeader() {
               </button>
               <button
                 onClick={() => setOpen(!open)}
-                className="lg:hidden p-2.5 text-coal hover:text-gold-deep"
+                className="lg:hidden p-2 sm:p-2.5 text-coal hover:text-gold-deep"
                 aria-label="Toggle menu"
               >
                 {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

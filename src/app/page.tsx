@@ -43,7 +43,7 @@ function OverlayCard({
       href={`/article/${article.slug}`}
       className={cn(
         "group relative overflow-hidden rounded-2xl bg-coal block",
-        lg ? "min-h-[440px] lg:min-h-[580px]" : "min-h-[250px]",
+        lg ? "min-h-[340px] sm:min-h-[440px] lg:min-h-[580px]" : "min-h-[190px] sm:min-h-[250px]",
         className
       )}
     >
@@ -62,14 +62,14 @@ function OverlayCard({
         </div>
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-      <div className={cn("absolute inset-x-0 bottom-0", lg ? "p-6 sm:p-8" : "p-5")}>
-        <span className="inline-block rounded-full bg-black/45 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm border border-white/10">
+      <div className={cn("absolute inset-x-0 bottom-0", lg ? "p-5 sm:p-8" : "p-4 sm:p-5")}>
+        <span className="inline-block rounded-full bg-black/45 px-2.5 sm:px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm border border-white/10">
           {cat}
         </span>
         <h2
           className={cn(
-            "mt-3 font-extrabold tracking-tight text-white leading-[1.15]",
-            lg ? "text-2xl sm:text-4xl font-display" : "text-[17px]"
+            "mt-2.5 sm:mt-3 font-extrabold tracking-tight text-white leading-[1.15]",
+            lg ? "text-[22px] sm:text-4xl font-display" : "text-[15px] sm:text-[17px]"
           )}
         >
           {article.title}
@@ -118,9 +118,9 @@ export default function Home() {
       <PulseTicker />
 
       {/* HERO GRID — magazine style */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-2">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <OverlayCard article={featured} size="lg" className="md:col-span-2 lg:row-span-2" />
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-5 sm:pt-8 pb-2">
+        <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+          <OverlayCard article={featured} size="lg" className="col-span-2 lg:row-span-2" />
           {heroSide.map((a) => (
             <OverlayCard key={a.slug} article={a} />
           ))}
@@ -140,7 +140,7 @@ export default function Home() {
           {latest.map((a) => {
             const cat = categoryLabel(a.category);
             return (
-              <Link key={a.slug} href={`/article/${a.slug}`} className="w-60 shrink-0 group">
+              <Link key={a.slug} href={`/article/${a.slug}`} className="w-52 sm:w-60 shrink-0 group">
                 <div className="aspect-[16/10] rounded-xl overflow-hidden bg-cream relative">
                   {a.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -168,7 +168,7 @@ export default function Home() {
       </section>
 
       {/* PILLARS — Startup Tracker, Events, Opportunities, Pulse */}
-      <section className="bg-cream border-y border-line py-14">
+      <section className="bg-cream border-y border-line py-10 sm:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             eyebrow="The Intelligence Layer"
@@ -213,7 +213,7 @@ export default function Home() {
       </section>
 
       {/* PULSE STATS — big numbers */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           eyebrow="The Numbers Today"
           title="Africa, by the data."
@@ -307,7 +307,7 @@ export default function Home() {
       />
 
       {/* FUNDING FLOW */}
-      <section className="bg-cream border-y border-line py-14">
+      <section className="bg-cream border-y border-line py-10 sm:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             eyebrow="The Capital Flow"
