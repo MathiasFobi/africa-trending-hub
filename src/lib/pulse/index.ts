@@ -1,20 +1,34 @@
 // Builds the pulse snapshot served by /api/pulse.
 //
 // Strategy (Phase 1, no database yet):
-// - Fetch live values from free providers, each with an 8s timeout.
+// - Free keyless providers (FX, gold, BTC) refresh on every snapshot build.
+// - Mansa API (indices + commodities) is throttled to once per hour because the
+//   free tier allows 100 requests/day: 2 calls/hour x 24h = 48/day, leaving
+//   headroom for cold starts and on-demand rebuilds.
 // - Anything unreachable falls back to the fixture value, marked stale.
-// - change% is computed against the previous snapshot held in module memory;
-//   on a cold start it falls back to comparing against the fixture value, so
-//   the first response after a deploy shows ~0% change rather than garbage.
+// - change% prefers the provider's own day-change figure (Mansa), else compares
+//   against the previous snapshot held in module memory; on a cold start it
+//   falls back to the fixture value.
 // - AFR-VC is derived from our own fundingTrends fixtures (latest quarter vs
 //   the one before it), so it stays in sync with the data we publish.
 //
 // A Vercel cron hits /api/cron/pulse-refresh every 15 minutes to keep the
-// in-memory snapshot warm; if the instance is cold, the first request builds
-// it on demand.
+// snapshot warm; if the instance is cold, the first request builds it on demand.
 
 import { PULSE_SYMBOLS, type PulseSymbolConfig } from "./config";
-import { fetchFxRates, fetchGoldUsd, fetchBtcUsd } from "./providers";
+import {
+  fetchFxRates,
+  fetchGoldUsd,
+  fetchBtcUsd,
+  fetchMansaIndices,
+  fetchMansaCommodities,
+  mansaValue,
+  mansaChangePct,
+  matchMansaIndex,
+  matchMansaCommodity,
+  type MansaIndex,
+  type MansaCommodity,
+} from "./providers";
 import { fundingTrends } from "@/data/startups";
 
 export type PulseItem = {
@@ -34,31 +48,60 @@ export type PulseSnapshot = {
 };
 
 const CACHE_TTL_MS = 15 * 60 * 1000;
+const MANSA_TTL_MS = 60 * 60 * 1000;
+
 let cached: PulseSnapshot | null = null;
 let cachedAt = 0;
+
+type MansaCache = {
+  indices: MansaIndex[] | null;
+  commodities: MansaCommodity[] | null;
+  fetchedAt: number;
+};
+let mansaCache: MansaCache | null = null;
 
 function pctChange(now: number, prev: number): number {
   if (!Number.isFinite(now) || !Number.isFinite(prev) || prev === 0) return 0;
   return ((now - prev) / prev) * 100;
 }
 
-function vcItem(prevSnapshot: PulseSnapshot | null): { value: number; change: number } {
+function vcItem(): { value: number; change: number } {
   const q = fundingTrends;
   const latest = q[q.length - 1];
   const prior = q[q.length - 2];
   const value = latest.total / 1_000_000_000;
   // Quarter-over-quarter change from our own published trend data
   const change = prior ? pctChange(latest.total, prior.total) : 0;
-  void prevSnapshot;
   return { value, change };
 }
 
+/** Mansa arg format for indices: "EXCHANGE:hint1,hint2" (e.g. "NGX:ASI,ngx-asi"). */
+function parseMansaIndexArg(arg: string | undefined): { exchange: string; hints: string[] } {
+  const [exchange = "", rest = ""] = (arg ?? "").split(":");
+  return { exchange, hints: rest.split(",").filter(Boolean) };
+}
+
+async function getMansaData(): Promise<MansaCache> {
+  const now = Date.now();
+  if (mansaCache && now - mansaCache.fetchedAt < MANSA_TTL_MS) return mansaCache;
+  const [indices, commodities] = await Promise.all([fetchMansaIndices(), fetchMansaCommodities()]);
+  // Cache even partial results so one failing endpoint doesn't hammer the quota
+  mansaCache = { indices, commodities, fetchedAt: now };
+  return mansaCache;
+}
+
 async function buildSnapshot(prev: PulseSnapshot | null): Promise<PulseSnapshot> {
-  const [fx, gold, btc] = await Promise.all([fetchFxRates(), fetchGoldUsd(), fetchBtcUsd()]);
+  const [fx, gold, btc, mansa] = await Promise.all([
+    fetchFxRates(),
+    fetchGoldUsd(),
+    fetchBtcUsd(),
+    getMansaData(),
+  ]);
   const prevBySymbol = new Map((prev?.items ?? []).map((i) => [i.symbol, i.value]));
 
   const items: PulseItem[] = PULSE_SYMBOLS.map((cfg: PulseSymbolConfig) => {
     let value: number | null = null;
+    let change: number | null = null;
     let source = "fixture";
 
     switch (cfg.provider) {
@@ -80,20 +123,38 @@ async function buildSnapshot(prev: PulseSnapshot | null): Promise<PulseSnapshot>
           source = "coinbase.com";
         }
         break;
+      case "mansa_index": {
+        const { exchange, hints } = parseMansaIndexArg(cfg.arg);
+        const hit = mansa.indices ? matchMansaIndex(mansa.indices, exchange, hints) : null;
+        const v = hit ? mansaValue(hit) : null;
+        if (v !== null) {
+          value = v;
+          change = hit ? mansaChangePct(hit) : null;
+          source = "mansaapi.com";
+        }
+        break;
+      }
+      case "mansa_commodity": {
+        const hit = mansa.commodities ? matchMansaCommodity(mansa.commodities, cfg.arg ?? "") : null;
+        const v = hit ? mansaValue(hit) : null;
+        if (v !== null) {
+          value = v;
+          change = hit ? mansaChangePct(hit) : null;
+          source = "mansaapi.com";
+        }
+        break;
+      }
       case "vc": {
-        const vc = vcItem(prev);
-        value = vc.value;
-        source = "ath-fixtures";
-        const reference = prevBySymbol.get(cfg.key) ?? cfg.fallback;
+        const vc = vcItem();
         return {
           symbol: cfg.key,
           label: `${cfg.label} (${fundingTrends[fundingTrends.length - 1].quarter})`,
-          value,
+          value: vc.value,
           unit: cfg.unit,
           decimals: cfg.decimals,
           change: vc.change,
           stale: false,
-          source,
+          source: "ath-fixtures",
         };
       }
       case "manual":
@@ -110,7 +171,7 @@ async function buildSnapshot(prev: PulseSnapshot | null): Promise<PulseSnapshot>
       value: resolved,
       unit: cfg.unit,
       decimals: cfg.decimals,
-      change: pctChange(resolved, reference),
+      change: change ?? pctChange(resolved, reference),
       stale,
       source,
     };
