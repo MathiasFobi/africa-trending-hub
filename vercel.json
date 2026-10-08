@@ -1,8 +1,1 @@
-{
-  "crons": [
-    {
-      "path": "/api/cron/daily-research",
-      "schedule": "0 13 * * 1-5"
-    }
-  ]
-}
+{"crons":[{"path":"/api/cron/daily-research","schedule":"0 13 * * 1-5"},{"path":"/api/cron/pulse-refresh","schedule":"*/15 * * * *"}]}
