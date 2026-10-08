@@ -29,6 +29,63 @@ export type Startup = {
 
 export const startups: Startup[] = [
   {
+    name: "Satlyt",
+    slug: "satlyt",
+    country: "Kenya",
+    city: "Nairobi",
+    sector: "SpaceTech / AI Infrastructure",
+    stage: "Seed",
+    totalRaised: 8_000_000,
+    lastRound: 8_000_000,
+    lastRoundDate: "2026-10-05",
+    investors: ["non sibi ventures", "TLCOM", "Antler", "Launch Africa Ventures", "Enza Capital"],
+    description:
+      "Software that lets satellite operators process data and run AI onboard spacecraft — built between Nairobi and Sunnyvale.",
+    status: "Rising",
+    momentum: 88,
+    founded: 2024,
+    hq: "Nairobi, Kenya",
+    tags: ["SpaceTech", "AI", "Deep Tech"],
+  },
+  {
+    name: "VunaPay",
+    slug: "vunapay",
+    country: "Kenya",
+    city: "Nairobi",
+    sector: "Fintech / Financial Inclusion",
+    stage: "Pre-seed",
+    totalRaised: 100_000,
+    lastRound: 100_000,
+    lastRoundDate: "2026-10-07",
+    investors: ["FINCA Ventures Prize"],
+    description:
+      "Fintech for financial inclusion, co-founded by Gatwiri Njogu-Mokaya and Koya Matsuno — $100K first-place winner at the 2026 FINCA Ventures Prize.",
+    status: "Rising",
+    momentum: 72,
+    founded: 2023,
+    hq: "Nairobi, Kenya",
+    tags: ["Fintech", "Inclusion", "Grants"],
+  },
+  {
+    name: "Kumbatia Seafood",
+    slug: "kumbatia-seafood",
+    country: "Kenya",
+    city: "Nairobi",
+    sector: "AgriTech / Aquaculture",
+    stage: "Pre-seed",
+    totalRaised: 100_000,
+    lastRound: 100_000,
+    lastRoundDate: "2026-10-07",
+    investors: ["FINCA Ventures Prize"],
+    description:
+      "Sustainable seafood venture, co-founded by Bernard Iha Thoya, Will Gertler and Nelson Ondego Mumata — $100K first-place winner in the agri/food category at FINCA 2026.",
+    status: "Watchlist",
+    momentum: 66,
+    founded: 2023,
+    hq: "Nairobi, Kenya",
+    tags: ["AgriTech", "Food Systems", "Grants"],
+  },
+  {
     name: "Flutterwave",
     slug: "flutterwave",
     country: "Nigeria",
@@ -219,7 +276,10 @@ export const fundingTrends = [
   { quarter: "Q2 2025", total: 2_400_000_000, deals: 234 },
   { quarter: "Q3 2025", total: 2_650_000_000, deals: 261 },
   { quarter: "Q4 2025", total: 3_100_000_000, deals: 287 },
-  { quarter: "Q1 2026", total: 2_850_000_000, deals: 256 },
+  // 2026 figures grounded on Disrupt Africa's quarterly reporting (deal-count methodology)
+  { quarter: "Q1 2026", total: 382_150_000, deals: 40 },
+  { quarter: "Q2 2026", total: 260_000_000, deals: 38 },
+  { quarter: "Q3 2026", total: 582_808_000, deals: 58 },
 ];
 
 export const sectorBreakdown = [
