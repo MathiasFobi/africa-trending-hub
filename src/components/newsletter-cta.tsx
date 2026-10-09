@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Mail, Check, AlertCircle, Loader2 } from "lucide-react";
 
-type Variant = "default" | "compact" | "inline";
+type Variant = "default" | "compact" | "inline" | "banner";
 
 type Props = {
   source?: string;
@@ -81,6 +81,66 @@ export function NewsletterCta({ source = "home", variant = "default", className 
           </div>
         )}
       </form>
+    );
+  }
+
+  if (variant === "banner") {
+    return (
+      <section className={`bg-midnight rounded-2xl overflow-hidden ${className ?? ""}`}>
+        <div className="px-6 py-8 sm:px-10 flex flex-col lg:flex-row lg:items-center gap-6">
+          <div className="flex-1">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-gold mb-2">
+              The Daily Pulse
+            </div>
+            <h2 className="font-extrabold tracking-tight text-2xl text-ivory leading-tight">
+              Africa's intelligence, in your inbox.
+            </h2>
+            <p className="text-sm text-ink-300 mt-1.5">
+              Five stories, three numbers, one chart. Every weekday at 7 AM ET.
+            </p>
+          </div>
+          <div className="flex-1 w-full max-w-md">
+            {status === "success" ? (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald/15 border border-emerald/40 flex items-center justify-center shrink-0">
+                  <Check className="w-5 h-5 text-emerald" />
+                </div>
+                <div>
+                  <div className="font-bold text-ivory">You're in.</div>
+                  <div className="text-sm text-ink-300">{message}</div>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex-1 relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={status === "loading"}
+                      placeholder="you@example.com"
+                      className="w-full pl-10 pr-3 py-3 bg-ink-800 border border-ink-700 rounded-xl text-ivory placeholder-ink-400 focus:border-gold focus:outline-none transition-colors disabled:opacity-50"
+                    />
+                  </div>
+                  <button type="submit" disabled={status === "loading"} className={buttonCls}>
+                    {status === "loading" && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Subscribe
+                  </button>
+                </div>
+                {status === "error" && (
+                  <div className="mt-2 text-xs text-signal-down flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {message}
+                  </div>
+                )}
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
     );
   }
 

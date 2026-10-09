@@ -12,136 +12,155 @@ import {
   Bookmark,
   ChevronDown,
 } from "lucide-react";
-import { navItems, site } from "@/data/site";
+import { categories, site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
-/** Short labels for the nav row so all sections fit on one line. */
-function shortLabel(label: string): string {
-  const amp = label.indexOf(" &");
-  return amp > 0 ? label.slice(0, amp) : label;
-}
+const mainNav = [
+  { href: "/", label: "Home" },
+  { href: "/pulse", label: "Pulse" },
+  { href: "/startups", label: "Startups" },
+  { href: "/events", label: "Events" },
+  { href: "/opportunities", label: "Opportunities" },
+  { href: "/watch", label: "Watch" },
+];
+
+const navLinkCls =
+  "flex items-center gap-1 text-[12.5px] font-semibold uppercase tracking-[0.08em] text-coal/75 hover:text-gold-deep transition-colors whitespace-nowrap";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      {/* Live strip — dark ticker teaser above the chrome */}
-      <div className="bg-midnight text-ink-300 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 flex items-center gap-3 text-[11px] font-mono overflow-x-auto no-scrollbar whitespace-nowrap">
-          <span className="flex items-center gap-1.5 shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald pulse-emerald" />
-            <span className="text-emerald font-semibold">LIVE</span>
-          </span>
-          <span className="text-ink-500 shrink-0">·</span>
-          <span className="shrink-0">NGX All-Share <span className="text-signal-up">+0.42%</span></span>
-          <span className="text-ink-500 shrink-0">·</span>
-          <span className="shrink-0">USD/NGN ₦1,485 <span className="text-signal-down">-0.18%</span></span>
-          <span className="text-ink-500 shrink-0">·</span>
-          <span className="shrink-0">BTC $108,420 <span className="text-signal-up">+1.4%</span></span>
-          <span className="text-ink-500 hidden md:inline shrink-0">·</span>
-          <span className="hidden md:inline text-gold shrink-0">Q2 African VC: $2.85B deployed</span>
+    <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur border-b border-line">
+      {/* Logo row */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 sm:h-20">
+          {/* Left actions */}
+          <div className="flex items-center gap-1 justify-start">
+            <button
+              className="p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            <button
+              className="hidden sm:block p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+              aria-label="Share"
+            >
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Centered logo */}
+          <Link href="/" className="flex items-center gap-2.5 group justify-center">
+            <div className="w-9 h-9 rounded-lg bg-gold flex items-center justify-center group-hover:bg-gold-deep transition-colors shadow-sm">
+              <TrendingUp className="w-5 h-5 text-midnight" strokeWidth={2.5} />
+            </div>
+            <span className="font-extrabold text-lg sm:text-2xl tracking-tight text-coal whitespace-nowrap">
+              {site.name}
+            </span>
+          </Link>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-1 justify-end">
+            <button
+              className="p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+              aria-label="Trending now"
+            >
+              <Zap className="w-5 h-5" />
+            </button>
+            <button
+              className="relative p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
+              aria-label="Saved stories"
+            >
+              <Bookmark className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-gold text-midnight text-[9px] font-bold flex items-center justify-center">
+                3
+              </span>
+            </button>
+            <button
+              onClick={() => setOpen(!open)}
+              className="lg:hidden p-2 sm:p-2.5 text-coal hover:text-gold-deep"
+              aria-label="Toggle menu"
+            >
+              {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur border-b border-line">
-        {/* Logo row */}
+      {/* Nav row — centered, magazine style */}
+      <nav className="hidden lg:block border-t border-line/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 sm:h-20">
-            {/* Left actions */}
-            <div className="flex items-center gap-1 justify-start">
-              <button
-                className="p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
-                aria-label="Search"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-              <button
-                className="hidden sm:block p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
-                aria-label="Share"
-              >
-                <Share2 className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Centered logo */}
-            <Link href="/" className="flex items-center gap-2.5 group justify-center">
-              <div className="w-9 h-9 rounded-lg bg-gold flex items-center justify-center group-hover:bg-gold-deep transition-colors shadow-sm">
-                <TrendingUp className="w-5 h-5 text-midnight" strokeWidth={2.5} />
-              </div>
-              <span className="font-extrabold text-lg sm:text-2xl tracking-tight text-coal whitespace-nowrap">
-                {site.name}
-              </span>
-            </Link>
-
-            {/* Right actions */}
-            <div className="flex items-center gap-1 justify-end">
-              <button
-                className="p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
-                aria-label="Trending now"
-              >
-                <Zap className="w-5 h-5" />
-              </button>
-              <button
-                className="relative p-2 sm:p-2.5 text-coal/70 hover:text-gold-deep transition-colors"
-                aria-label="Saved stories"
-              >
-                <Bookmark className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-gold text-midnight text-[9px] font-bold flex items-center justify-center">
-                  3
-                </span>
-              </button>
-              <button
-                onClick={() => setOpen(!open)}
-                className="lg:hidden p-2 sm:p-2.5 text-coal hover:text-gold-deep"
-                aria-label="Toggle menu"
-              >
-                {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Nav row — centered, magazine style */}
-        <nav className="hidden lg:block border-t border-line/70">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <ul className="flex items-center justify-center gap-7 h-12">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-1 text-[12.5px] font-semibold uppercase tracking-[0.08em]",
-                      "text-coal/75 hover:text-gold-deep transition-colors whitespace-nowrap"
-                    )}
-                  >
-                    {shortLabel(item.label)}
-                    <ChevronDown className="w-3 h-3 opacity-50" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
-
-        {/* Mobile menu */}
-        {open && (
-          <div className="lg:hidden border-t border-line bg-paper">
-            <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="px-3 py-2.5 text-sm font-semibold text-coal/80 hover:text-gold-deep hover:bg-cream rounded-lg"
-                >
+          <ul className="flex items-center justify-center gap-8 h-12">
+            {mainNav.slice(0, 3).map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className={navLinkCls}>
                   {item.label}
                 </Link>
-              ))}
-            </nav>
-          </div>
-        )}
-      </header>
-    </>
+              </li>
+            ))}
+            {/* Topics dropdown */}
+            <li className="relative group">
+              <button className={cn(navLinkCls, "cursor-pointer")}>
+                Topics
+                <ChevronDown className="w-3 h-3 opacity-50 group-hover:rotate-180 transition-transform" />
+              </button>
+              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-150">
+                <div className="bg-card border border-line rounded-xl shadow-xl py-2 w-60">
+                  {categories.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/category/${c.slug}`}
+                      className="block px-4 py-2.5 text-sm font-medium text-coal/80 hover:text-gold-deep hover:bg-cream transition-colors"
+                    >
+                      {c.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </li>
+            {mainNav.slice(3).map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className={navLinkCls}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="lg:hidden border-t border-line bg-paper">
+          <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col">
+            {mainNav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="px-3 py-2.5 text-sm font-semibold text-coal/80 hover:text-gold-deep hover:bg-cream rounded-lg"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className="px-3 pt-3 pb-1 text-[10px] font-mono uppercase tracking-widest text-faint">
+              Topics
+            </div>
+            {categories.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/category/${c.slug}`}
+                onClick={() => setOpen(false)}
+                className="px-3 py-2 text-sm text-coal/70 hover:text-gold-deep hover:bg-cream rounded-lg"
+              >
+                {c.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
+    </header>
   );
 }
