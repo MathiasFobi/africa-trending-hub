@@ -51,6 +51,26 @@ export type PulseSnapshot = {
 const CACHE_TTL_MS = 15 * 60 * 1000;
 const MANSA_TTL_MS = 60 * 60 * 1000;
 
+export type MansaDiag = {
+  fetchedAt: number | null;
+  indexCount: number | null;
+  commodityCount: number | null;
+  /** per tracked symbol: did it match a Mansa record, and which one */
+  matches: Record<string, { matched: boolean; code?: string; name?: string }>;
+};
+
+let lastDiag: MansaDiag = {
+  fetchedAt: null,
+  indexCount: null,
+  commodityCount: null,
+  matches: {},
+};
+
+/** Last Mansa fetch diagnostics (for ?debug=1 on /api/pulse). Zero quota cost. */
+export function getLastMansaDiagnostics(): MansaDiag {
+  return lastDiag;
+}
+
 let cached: PulseSnapshot | null = null;
 let cachedAt = 0;
 
@@ -100,6 +120,13 @@ async function buildSnapshot(prev: PulseSnapshot | null): Promise<PulseSnapshot>
   ]);
   const prevBySymbol = new Map((prev?.items ?? []).map((i) => [i.symbol, i.value]));
 
+  lastDiag = {
+    fetchedAt: Date.now(),
+    indexCount: mansa.indices ? mansa.indices.length : null,
+    commodityCount: mansa.commodities ? mansa.commodities.length : null,
+    matches: {},
+  };
+
   const items: PulseItem[] = PULSE_SYMBOLS.map((cfg: PulseSymbolConfig) => {
     let value: number | null = null;
     let change: number | null = null;
@@ -127,6 +154,9 @@ async function buildSnapshot(prev: PulseSnapshot | null): Promise<PulseSnapshot>
       case "mansa_index": {
         const { exchange, hints } = parseMansaIndexArg(cfg.arg);
         const hit = mansa.indices ? matchMansaIndex(mansa.indices, exchange, hints) : null;
+        lastDiag.matches[cfg.key] = hit
+          ? { matched: true, code: hit.code ?? hit.slug, name: hit.name }
+          : { matched: false };
         const v = hit ? mansaValue(hit) : null;
         if (v !== null) {
           value = v;
@@ -137,6 +167,9 @@ async function buildSnapshot(prev: PulseSnapshot | null): Promise<PulseSnapshot>
       }
       case "mansa_commodity": {
         const hit = mansa.commodities ? matchMansaCommodity(mansa.commodities, cfg.arg ?? "") : null;
+        lastDiag.matches[cfg.key] = hit
+          ? { matched: true, code: hit.code ?? hit.slug, name: hit.name }
+          : { matched: false };
         const v = hit ? mansaValue(hit) : null;
         if (v !== null) {
           value = v;
