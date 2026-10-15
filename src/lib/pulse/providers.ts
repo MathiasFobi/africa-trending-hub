@@ -118,11 +118,37 @@ function num(v: unknown): number | null {
   return typeof n === "number" && Number.isFinite(n) && n > 0 ? n : null;
 }
 
+/**
+ * Normalize the `data` payload of a Mansa markets list endpoint into an array.
+ * Handles three shapes: a bare array, a wrapper object with a known list key
+ * (e.g. { indices: [...] }), and a record-of-records map. A bare wrapper whose
+ * only value is itself an array (Object.values -> [[...]]) would otherwise
+ * silently yield zero matches downstream, so the wrapper keys are checked first.
+ */
+function unwrapList<T>(data: unknown, wrapperKeys: string[]): T[] | null {
+  if (Array.isArray(data)) return data as T[];
+  if (data && typeof data === "object") {
+    const rec = data as Record<string, unknown>;
+    for (const k of wrapperKeys) {
+      if (Array.isArray(rec[k])) return rec[k] as T[];
+    }
+    const keys = Object.keys(rec);
+    const vals = Object.values(rec);
+    if (
+      keys.length > 0 &&
+      vals.every((v) => v !== null && typeof v === "object" && !Array.isArray(v))
+    ) {
+      return vals as T[];
+    }
+  }
+  return null;
+}
+
 /** All tracked African indices, or null when the key is missing/unreachable. */
 export async function fetchMansaIndices(): Promise<MansaIndex[] | null> {
   const data = await fetchMansa<MansaIndex[] | Record<string, MansaIndex>>("/markets/indices");
   if (!data) return null;
-  return Array.isArray(data) ? data : Object.values(data);
+  return unwrapList<MansaIndex>(data, ["indices", "data", "items", "results"]);
 }
 
 /** Commodity prices relevant to African producers/traders, or null. */
@@ -131,7 +157,7 @@ export async function fetchMansaCommodities(): Promise<MansaCommodity[] | null> 
     "/markets/commodities"
   );
   if (!data) return null;
-  return Array.isArray(data) ? data : Object.values(data);
+  return unwrapList<MansaCommodity>(data, ["commodities", "data", "items", "results"]);
 }
 
 /** Normalized value from a Mansa index/commodity record. */
