@@ -22,11 +22,14 @@ export type PulseSymbolConfig = {
 // UPGRADE_PATH: mansa providers are live once MANSA_API_KEY is set. Any symbol
 // whose provider data can't be fetched stays on its fixture value, marked stale.
 // --- African equity indices (live via Mansa) ---
+// NOTE (Oct 9, 2026): Mansa's tracked-index universe (docs: /markets/indices
+// history codes ngx-asi, jse-asi, egx-30, gse-ci, brvm-ci, masi, nsx-oi) has no
+// Uganda index — USE was swapped for Ghana's GSE Composite (gse-ci).
 export const PULSE_SYMBOLS: PulseSymbolConfig[] = [
   { key: "NGX", label: "Nigerian Stock Exchange", decimals: 0, provider: "mansa_index", arg: "NGX:ASI,ngx-asi", fallback: 102_485 },
   { key: "JSE", label: "Johannesburg SE", decimals: 0, provider: "mansa_index", arg: "JSE:jse-asi", fallback: 78_241 },
   { key: "BRVM", label: "BRVM (West Africa)", decimals: 1, provider: "mansa_index", arg: "BRVM:brvm-ci,brvm10", fallback: 286 },
-  { key: "USE", label: "Uganda SE", decimals: 0, provider: "mansa_index", arg: "USE:use-asi", fallback: 1_412 },
+  { key: "GSE", label: "Ghana GSE Composite", decimals: 0, provider: "mansa_index", arg: "GSE:gse-ci,gse-composite", fallback: 14_053 },
   { key: "EGX30", label: "Egypt EGX30", decimals: 0, provider: "mansa_index", arg: "EGX:egx-30,egx30", fallback: 31_204 },
   // --- FX (live, open.er-api.com, free, no key) ---
   { key: "USD/NGN", label: "US Dollar / Naira", decimals: 0, provider: "fx", arg: "NGN", unit: "₦", fallback: 1_485 },
